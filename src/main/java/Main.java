@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,13 +11,16 @@ public class Main {
                     args[1]
             );
 
-            Statement statement = connection.createStatement();
+
 
             String query = """
                 SELECT ProductId, ProductName, UnitPrice, UnitsInStock from products
                 """;
 
+            PreparedStatement statement = connection.prepareStatement(query);
+
             ResultSet resultSet = statement.executeQuery(query);
+
             System.out.println("Id   Name                                   Price   Stock");
             System.out.println("------------------------------------------------------------");
             while (resultSet.next()){
@@ -31,6 +31,7 @@ public class Main {
                 System.out.printf("%-4d %-35s %8.2f %6d%n", id, name, price, stock);
             }
             resultSet.close();
+            statement.close();
             connection.close();
         } catch (Exception e) {
             throw new RuntimeException(e);
